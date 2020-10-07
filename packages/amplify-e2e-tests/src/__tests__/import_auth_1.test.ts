@@ -89,6 +89,7 @@ describe('auth import userpool only', () => {
   let ogProjectDetails: ProjectDetails;
 
   let projectRoot: string;
+  let ignoreProjectDeleteErrors: boolean = false;
 
   beforeAll(async () => {
     ogProjectRoot = await createNewProjectDir(ogProjectSettings.name);
@@ -109,10 +110,20 @@ describe('auth import userpool only', () => {
 
   beforeEach(async () => {
     projectRoot = await createNewProjectDir(projectPrefix);
+    ignoreProjectDeleteErrors = false;
   });
 
   afterEach(async () => {
-    await deleteProject(projectRoot);
+    try {
+      await deleteProject(projectRoot);
+    } catch (error) {
+      // In some tests where project initialization fails it can lead to errors on cleanup which we
+      // can ignore if set by the test
+      if (!ignoreProjectDeleteErrors) {
+        throw error;
+      }
+    }
+
     deleteProjectDir(projectRoot);
   });
 
@@ -121,7 +132,11 @@ describe('auth import userpool only', () => {
     await importAuth(projectRoot, ogProjectPrefix);
 
     const projectDetails = getProjectDetails(projectRoot);
-    expect(ogProjectDetails).toMatchObject(projectDetails);
+
+    expect(ogProjectDetails.appClientID).toEqual(projectDetails.appClientID);
+    expect(ogProjectDetails.appClientIDWeb).toEqual(projectDetails.appClientIDWeb);
+    expect(ogProjectDetails.appClientSecret).toEqual(projectDetails.appClientSecret);
+    expect(ogProjectDetails.userPoolId).toEqual(projectDetails.userPoolId);
 
     await amplifyStatus(projectRoot, 'Import');
     await amplifyPushAuth(projectRoot);
@@ -305,6 +320,9 @@ describe('auth import userpool only', () => {
   });
 
   it('init project in different region, import auth, should fail with error', async () => {
+    // Set it to make sure deleteProject error will be ignored
+    ignoreProjectDeleteErrors = true;
+
     const { ACCESS_KEY_ID, SECRET_ACCESS_KEY } = getEnvVars();
     if (!ACCESS_KEY_ID || !SECRET_ACCESS_KEY) {
       throw new Error('Set AWS_ACCESS_KEY_ID and SECRET_ACCESS_KEY either in .env file or as Environment variable');
@@ -350,7 +368,7 @@ const importAuth = (cwd: string, autoCompletePrefix: string) => {
       .send(autoCompletePrefix)
       .delay(500) // Some delay required for autocomplete and terminal to catch up
       .sendCarriageReturn()
-      .wait('✅ Cognito User Pool')
+      .wait('- JavaScript: https://docs.amplify.aws/lib/auth/getting-started/q/platform/js')
       .sendEof()
       .run((err: Error) => {
         if (!err) {
