@@ -1237,6 +1237,7 @@ workflows:
             branches:
               only:
                 - beta
+                - feat-import
           requires:
             - build
             - publish_to_local_registry
@@ -1277,7 +1278,6 @@ workflows:
                 - release
                 - master
                 - beta
-                - feat-import
       - amplify-configure-amplify_e2e_tests:
           filters: &ref_2
             branches:
