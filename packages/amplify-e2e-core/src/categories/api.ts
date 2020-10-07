@@ -1,6 +1,6 @@
-import { nspawn as spawn, KEY_DOWN_ARROW } from '../../src';
+import { nspawn as spawn, KEY_DOWN_ARROW } from '..';
 import * as fs from 'fs-extra';
-import { getCLIPath, updateSchema } from '../../src';
+import { getCLIPath, updateSchema } from '..';
 import { selectRuntime, selectTemplate } from './lambda-function';
 import { singleSelect, multiSelect } from '../utils/selectors';
 import _ from 'lodash';

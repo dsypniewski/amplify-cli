@@ -2,7 +2,7 @@ import { JSONUtilities } from 'amplify-cli-core';
 import fs from 'fs-extra';
 import _ from 'lodash';
 import path from 'path';
-import { nspawn as spawn, ExecutionContext, getCLIPath, KEY_DOWN_ARROW } from '../../src';
+import { nspawn as spawn, ExecutionContext, getCLIPath, KEY_DOWN_ARROW } from '..';
 import { getLayerVersion, listVersions } from '../utils/sdk-calls';
 import { multiSelect } from '../utils/selectors';
 

@@ -129,9 +129,10 @@ function getResourcesToBeCreated(amplifyMeta, currentamplifyMeta, category, reso
         const dependsOnCategory = resources[i].dependsOn[j].category;
         const dependsOnResourcename = resources[i].dependsOn[j].resourceName;
         if (
-          !amplifyMeta[dependsOnCategory][dependsOnResourcename].lastPushTimeStamp ||
-          !currentamplifyMeta[dependsOnCategory] ||
-          !currentamplifyMeta[dependsOnCategory][dependsOnResourcename]
+          (!amplifyMeta[dependsOnCategory][dependsOnResourcename].lastPushTimeStamp ||
+            !currentamplifyMeta[dependsOnCategory] ||
+            !currentamplifyMeta[dependsOnCategory][dependsOnResourcename]) &&
+          amplifyMeta[dependsOnCategory][dependsOnResourcename].serviceType !== 'imported'
         ) {
           resources.push(amplifyMeta[dependsOnCategory][dependsOnResourcename]);
         }
@@ -235,7 +236,7 @@ function getResourcesToBeSynced(amplifyMeta, currentamplifyMeta, category, resou
         ) {
           amplifyMeta[categoryName][resource].resourceName = resource;
           amplifyMeta[categoryName][resource].category = categoryName;
-          amplifyMeta[categoryName][resource].sync = 'link';
+          amplifyMeta[categoryName][resource].sync = 'import';
 
           resources.push(amplifyMeta[categoryName][resource]);
         } else if (
@@ -405,7 +406,7 @@ export async function showResourceTable(category, resourceName, filteredResource
   const createOperationLabel = 'Create';
   const updateOperationLabel = 'Update';
   const deleteOperationLabel = 'Delete';
-  const linkOperationLabel = 'Link';
+  const importOperationLabel = 'Import';
   const unlinkOperationLabel = 'Unlink';
   const noOperationLabel = 'No Change';
   const tableOptions = [['Category', 'Resource name', 'Operation', 'Provider plugin']];
@@ -432,8 +433,8 @@ export async function showResourceTable(category, resourceName, filteredResource
     let operation;
 
     switch (resourcesToBeSynced[i].sync) {
-      case 'link':
-        operation = linkOperationLabel;
+      case 'import':
+        operation = importOperationLabel;
         break;
       case 'unlink':
         operation = unlinkOperationLabel;

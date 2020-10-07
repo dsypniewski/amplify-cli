@@ -73,11 +73,11 @@ async function run(context, resourceDefinition) {
     }
 
     if (resourcesToBeSynced.length > 0) {
-      const linkResources = resourcesToBeSynced.filter(r => r.sync === 'link');
+      const importResources = resourcesToBeSynced.filter(r => r.sync === 'import');
       const unlinkedResources = resourcesToBeSynced.filter(r => r.sync === 'unlink');
 
-      if (linkResources.length > 0) {
-        await context.amplify.updateamplifyMetaAfterPush(linkResources);
+      if (importResources.length > 0) {
+        await context.amplify.updateamplifyMetaAfterPush(importResources);
       }
 
       if (unlinkedResources.length > 0) {

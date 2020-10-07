@@ -1,4 +1,4 @@
-import { nspawn as spawn, KEY_DOWN_ARROW, getCLIPath } from '../../src';
+import { nspawn as spawn, KEY_DOWN_ARROW, getCLIPath } from '..';
 
 export function addPinpoint(cwd: string, settings: any) {
   return new Promise((resolve, reject) => {
